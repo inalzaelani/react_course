@@ -18,15 +18,57 @@ const FORM_LIST = [
     {id : 'typeId',label : 'Type',type : 'text',placeholder : 'Enter course type'},
     {id : 'courseFile',label : 'Course File',type : 'file',placeholder : 'Enter course file'},
     {id : 'level',label : 'Level',type : 'text',placeholder : 'Enter course level'},
-    {id : 'duration',label : 'Duration',type : 'text',placeholder : 'Enter course duration'},
+    {id : 'duration',label : 'Duration',type : 'number',placeholder : 'Enter course duration'},
 ]
 
-const AddCourse = () => {
+
+const AddCourse = (props) => {
     const {getter, setter} = useAddCourse();
+    const {onNavigate,addCourse} = props
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        const newErrors = {};
+        if (!getter.title) {
+            alert("Please enter a title");
+        }
+        else if (!getter.description) {
+            alert("Please enter a description")
+        }
+        else if (!getter.typeId) {
+           alert("Please enter a type")
+        }
+        else if (!getter.level) {
+            alert("Please enter a level")
+        }
+        else if (!getter.duration) {
+            alert("Please enter a duration")
+        }
+        else if (!getter.courseFile) {
+            alert("Please enter a course file")
+        }
+
+        else{
+            const newCourse = {
+                title: getter.title,
+                description: getter.description,
+                type: getter.typeId,
+                level: getter.level,
+                duration: getter.duration,
+                file: getter.courseFile
+            };
+
+            addCourse(newCourse);
+            onNavigate("course-list");
+        }
+
+    };
+
     return (
         <StyledContainer>
             <StyledTitle>Add Course</StyledTitle>
-            <StyledForm>
+            <StyledForm onSubmit={handleSubmit}>
                 {FORM_LIST.map((form) => (
                     <FormInput
                     label = {form.label}
@@ -35,10 +77,11 @@ const AddCourse = () => {
                     value = {getter[form.id]}
                     onChange = {setter[form.id]}
                     />
+
                 ))}
                 <ButtonGroup>
                     <StyledButtonSubmit type="submit"> Submit </StyledButtonSubmit>
-                    <StyledButtonReset type="reset"> Cancel </StyledButtonReset>
+                    <StyledButtonReset type="reset" onClick={()=>onNavigate("course-list")}> Cancel </StyledButtonReset>
                 </ButtonGroup>
             </StyledForm>
         </StyledContainer>
